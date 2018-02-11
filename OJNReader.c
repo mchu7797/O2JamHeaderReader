@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <wchar.h>
 
 struct OjnHeader {
     int SongId;
