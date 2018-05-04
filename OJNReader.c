@@ -1,47 +1,58 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 struct OjnHeader {
-    int SongId;
-    char Signature[4];
-    float EncodeVersion;
-    int Genre;
-    float Bpm;
-    short Level[4];
-    int EventCount[3];
-    int NoteCount[3];
-    int MeasureCount[3];
-    int PackageCount[3];
-    short EncodeVersionOld;
-    short SongIdOld;
-    char GenreOld[20];
-    int BeatmapSize;
-    int FileVersionOld;
-    char Title[64];
-    char Artist[32];
-    char NoteCharter[32];
-    char OjmFileName[32];
-    int CoverSize;
-    int Time[3];
-    int NoteDataOffset[3];
-    int CoverDataOffset;
+	int SongId;
+	char Signature[4];
+	float EncodingVersion;
+	int Genre;
+	float Bpm;
+	short Level[4];
+	int EventCount[3];
+	int NoteCount[3];
+	int MeasureCount[3];
+	int PackageCount[3];
+	short EncodingVersionOld;
+	short SongIdOld;
+	char GenreOld[20];
+	int BeatmapSize;
+	int FileVersionOld;
+	char Title[64];
+	char Artist[32];
+	char NoteCharter[32];
+	char MusicFileName[32];
+	int CoverSize;
+	int Time[3];
+	int NoteDataOffset[3];
+	int CoverDataOffset;
 };
 
-int main(int argc, char *argv[])
-{
-    struct OjnHeader header;
+typedef struct OjnHeader O2JamHeader;
 
-    FILE *file = fopen(argv[1], "rb");
+int PrintData(O2JamHeader *header) {
+	printf("Song Name    : %s\n", header->Title);
+	printf("Song Artist  : %s\n", header->Artist);
+	printf("Song Charter : %s\n", header->NoteCharter);
+}
 
-    if (file == NULL)
-        return 0;
+int main(int argc, char *argv[]) {
+	if (argc < 2) {
+		printf("You aren't given file name.");
+		return 1;
+	}
+	
+	FILE *stream;
+	stream = fopen(argv[1], "rb");
 
-    fread(&header, sizeof(header), 1, file);
+	if (stream == NULL) {
+		printf("Invaild file name.");
+		return 1;
+	}
 
-    printf("TITLE : %s\n", header.Title);
-    printf("ARTIST : %s\n", header.Artist);
-    printf("NOTECHARTER : %s\n", header.NoteCharter);
-    printf("NOTECOUNT: E %d, N %d, H %d\n", header.NoteCount[0], header.NoteCount[1], header.NoteCount[2]);
-    printf("LEVEL: E %d, N %d, H %d\n", header.Level[0], header.Level[1], header.Level[2]);
-    
-    return 0;
+	O2JamHeader header;
+	fread(&header, sizeof(O2JamHeader), 1, stream);
+
+	PrintData(&header);
+
+	return 0;
 }
